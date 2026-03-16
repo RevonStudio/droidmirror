@@ -1,0 +1,32 @@
+{
+  "name": "droidmirror",
+  "version": "1.1.0",
+  "description": "Premium Android Mirroring & Control based on Scrcpy",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.nonsensys.droidmirror",
+    "productName": "DroidMirror",
+    "win": {
+      "icon": "icon.png",
+      "target": "nsis"
+    },
+    "extraResources": [
+      {
+        "from": "scrcpy/",
+        "to": "scrcpy/",
+        "filter": ["**/*"]
+      }
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^41.0.2"
+  }
+}

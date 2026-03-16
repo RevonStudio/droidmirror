@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DroidMirror</title>
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="window-shadow-wrapper">
+        <div class="titlebar">
+            <div class="window-controls mac-style">
+                <button id="btn-win-close" class="mac-btn close" title="Close window"></button>
+                <button id="btn-win-min" class="mac-btn min" title="Minimize window"></button>
+                <button id="btn-win-max" class="mac-btn max" title="Maximize window (disabled)"></button>
+            </div>
+            <span class="title center">DroidMirror</span>
+        </div>
+
+        <div class="container">
+            <aside class="sidebar">
+                <div class="lang-container">
+                    <select id="lang-select" class="lang-dropdown">
+                        <option value="en">English (US)</option>
+                        <option value="pt">Português (BR)</option>
+                    </select>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2 class="section-title"><i data-lucide="smartphone"></i> <span data-i18n="device">Device</span></h2>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <select id="device-select" class="lang-dropdown" style="flex: 1; padding: 6px;">
+                            <option value="" data-i18n="autoDevice">Auto (Any)</option>
+                        </select>
+                        <button id="btn-refresh-devices" class="btn secondary" style="padding: 6px 10px;"
+                            title="Refresh devices" data-title="titleRefreshDevices">
+                            <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div id="pending-alert" class="pending-alert hidden">
+                        <i data-lucide="alert-circle" class="icon"></i> <span data-i18n="pendingChanges">Settings changed.
+                            Apply to restart.</span>
+                    </div>
+
+                    <div class="action-flex" style="display: flex; gap: 8px;">
+                        <button id="btn-run-all" class="btn primary" style="flex: 1; padding: 12px;"
+                            data-title="titleRunAll">
+                            <span id="run-all-icon" class="icon"><i data-lucide="rocket"></i></span> <span id="run-all-text"
+                                data-i18n="runAll">Start with My Settings</span>
+                        </button>
+                        <button id="btn-stop-side" class="btn danger hidden" style="width: 50px; padding: 12px;"
+                            title="Stop Scrcpy">
+                            <i data-lucide="square" class="icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2 class="section-title"><i data-lucide="zap"></i> <span data-i18n="quickActions">Quick Actions</span></h2>
+                    <div class="button-group">
+                        <button id="btn-start" class="btn primary">
+                            <i data-lucide="play" class="icon"></i> <span data-i18n="startDefault">Start default</span>
+                        </button>
+                        <button id="btn-stop" class="btn danger">
+                            <i data-lucide="square" class="icon"></i> <span data-i18n="stopScrcpy">Stop scrcpy</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2 class="section-title"><i data-lucide="settings-2"></i> <span data-i18n="options">Options</span></h2>
+                    <div class="button-grid">
+                        <button id="btn-screen-off" class="btn secondary" title="Turn screen off while mirroring"
+                            data-title="titleScreenOff">
+                            <span class="active-dot"></span>
+                            <span data-i18n="screenOff">Turn Screen Off</span>
+                        </button>
+                        <button id="btn-always-on-top" class="btn secondary" title="Make scrcpy window always on top"
+                            data-title="titleAlwaysOnTop">
+                            <span class="active-dot"></span>
+                            <span data-i18n="alwaysOnTop">Always On Top</span>
+                        </button>
+                        <button id="btn-no-audio" class="btn secondary" title="Disable audio forwarding"
+                            data-title="titleNoAudio">
+                            <span class="active-dot"></span>
+                            <span data-i18n="noAudio">No Audio</span>
+                        </button>
+                        <button id="btn-stay-awake" class="btn secondary" title="Prevent device from sleeping"
+                            data-title="titleStayAwake">
+                            <span class="active-dot"></span>
+                            <span data-i18n="stayAwake">Stay Awake</span>
+                        </button>
+                        <button id="btn-show-touches" class="btn secondary" title="Show visual feedback for touches"
+                            data-title="titleShowTouches">
+                            <span class="active-dot"></span>
+                            <span data-i18n="showTouches">Show Touches</span>
+                        </button>
+                        <button id="btn-read-only" class="btn secondary" title="Disable device control (view only)"
+                            data-title="titleReadOnly">
+                            <span class="active-dot"></span>
+                            <span data-i18n="readOnly">Read Only</span>
+                        </button>
+                        <button id="btn-power-off" class="btn secondary" title="Power off device screen on close"
+                            data-title="titlePowerOff">
+                            <span class="active-dot"></span>
+                            <span data-i18n="powerOff">Power Off on Close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2 class="section-title"><i data-lucide="gauge"></i> <span data-i18n="performance">Performance</span></h2>
+                    <div class="slider-group">
+                        <div class="label-row">
+                            <span data-i18n="resolutionLimit">Resolution:</span>
+                            <span id="res-label" class="badge">Max</span>
+                        </div>
+                        <input type="range" id="res-slider" min="0" max="4" value="4">
+                        <div id="res-warning" class="warning-text hidden" data-i18n="highResWarning">High resolutions may
+                            cause delay depending on your network.</div>
+                    </div>
+                    <div class="slider-group">
+                        <div class="label-row">
+                            <span data-i18n="fpsLimit">Max FPS:</span>
+                            <span id="fps-label" class="badge">Unlimited</span>
+                        </div>
+                        <input type="range" id="fps-slider" min="0" max="4" value="4">
+                    </div>
+                    <div class="slider-group">
+                        <div class="label-row">
+                            <span data-i18n="bitrateLimit">Bitrate:</span>
+                            <span id="bitrate-label" class="badge">8 Mbps</span>
+                        </div>
+                        <input type="range" id="bitrate-slider" min="0" max="6" value="3">
+                    </div>
+                    
+                    <button id="btn-run-res" class="btn primary-outline"
+                        style="width: 100%; white-space: nowrap; flex-shrink: 0; margin-bottom: 8px;"
+                        data-title="titleRunRes">
+                        <i data-lucide="play" style="width: 12px; height: 12px; margin-right: 4px;"></i> <span
+                            id="run-res-text">Run at Max</span>
+                    </button>
+
+                    <div class="button-grid">
+                        <button id="btn-max-fps" class="btn secondary" title="Limit FPS to 60" data-title="titleMaxFps">
+                            <span data-i18n="maxFps">Max 60 FPS</span>
+                        </button>
+                        <button id="btn-record" class="btn secondary" title="Record screen to file"
+                            data-title="titleRecord">
+                            <span data-i18n="record">Record Screen</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section" id="wireless-section">
+                    <h2 class="section-title"><i data-lucide="wifi"></i> <span data-i18n="wirelessTitle">Wireless</span></h2>
+                    <p class="section-desc" data-i18n="wirelessDesc">Enable TCP/IP on device via USB first.</p>
+                    <div class="input-group" style="margin-bottom: 12px;">
+                        <button id="btn-tcpip" class="btn-action full-width">
+                            <i data-lucide="usb"></i>
+                            <span data-i18n="enableTcpIp">Enable TCP/IP Mode</span>
+                        </button>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="wireless-ip" placeholder="192.168.1.15" class="custom-input">
+                        <button id="btn-connect-wireless" class="btn-action primary" style="padding: 8px 15px;">
+                            <i data-lucide="wifi"></i>
+                            <span data-i18n="connect">Connect</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2 class="section-title"><i data-lucide="cpu"></i> <span data-i18n="advanced">Advanced</span></h2>
+                    <div class="button-grid" style="margin-bottom: 15px;">
+                        <button id="btn-otg" class="btn secondary"
+                            title="OTG mode (Simulate physical mouse/keyboard without mirroring)" data-title="titleOtg">
+                            <span data-i18n="otgMode">OTG Mode</span>
+                        </button>
+                    </div>
+
+                    <h2 class="section-title"><i data-lucide="terminal"></i> <span data-i18n="customCommand">Custom Command</span></h2>
+                    <div class="input-group">
+                        <input type="text" id="custom-args" placeholder="e.g. -m 1024 -b 2M" class="custom-input"
+                            data-placeholder="placeholderCustom">
+                        <button id="btn-custom" class="btn primary-outline" data-i18n="run">Run</button>
+                    </div>
+                </div>
+
+            </aside>
+
+            <main class="content">
+                <div class="terminal-header">
+                    <span data-i18n="terminalOutput">Terminal Output</span>
+                    <button id="btn-clear-log" class="btn-small" data-i18n="clear">Clear</button>
+                </div>
+                <div id="terminal" class="terminal-body"></div>
+            </main>
+        </div>
+
+        <footer>
+            <div class="footer-left">
+                <div class="brand">DroidMirror</div>
+                <div class="owner">by <span class="owner-name">Nonsensys Developments</span></div>
+                <div class="version">v1.1.0</div>
+            </div>
+            <div class="footer-right">
+                <button id="btn-social-yt" class="btn-footer btn-yt" title="YouTube - NonsensysDEV">
+                    <i data-lucide="youtube"></i> <span>YouTube</span>
+                </button>
+                <button id="btn-repo-droid" class="btn-footer btn-git" title="DroidMirror Repository">
+                    <i data-lucide="github"></i> <span>DroidMirror</span>
+                </button>
+                <button id="btn-repo-scrcpy" class="btn-footer btn-git" title="Scrcpy Repository">
+                    <i data-lucide="github"></i> <span>scrcpy</span>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <div id="tutorial-container"></div>
+    <div id="tutorial-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 id="modal-title">Tutorial Finalizado!</h2>
+            <p id="modal-desc">Você entendeu como usar o DroidMirror ou gostaria de rever o tutorial?</p>
+            <div class="modal-actions">
+                <button id="btn-modal-restart" class="btn secondary">Rever Tutorial</button>
+                <button id="btn-modal-done" class="btn primary">Entendi tudo!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/renderer.js" defer></script>
+</body>
+
+</html>
