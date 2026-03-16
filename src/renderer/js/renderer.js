@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'btn-read-only': '--no-control',
             'btn-power-off': '--power-off-on-close'
         };
-        
+
         Object.keys(toggleMap).forEach(btnId => {
             const btn = document.getElementById(btnId);
             if (btn) {
@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resLabel.textContent = res.label;
         const runText = translations[window.App.curLang].runAtRes;
         runResText.textContent = `${runText} ${res.label}`;
-        
+
         if (resSlider.value >= 2) resWarning?.classList.remove('hidden');
         else resWarning?.classList.add('hidden');
 
@@ -335,16 +335,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!window.scrcpyAPI) return;
         const devices = await window.scrcpyAPI.getDevices();
         const currentSelection = deviceSelect?.value;
-        
+
         while (deviceSelect && deviceSelect.options.length > 1) deviceSelect.remove(1);
-        
+
         devices.forEach(d => {
             const opt = document.createElement('option');
             opt.value = d.id;
             opt.text = `${d.id} (${d.state})`;
             deviceSelect?.add(opt);
         });
-        
+
         if (currentSelection) deviceSelect.value = currentSelection;
     }
 
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const args = [];
         const res = resolutionsArray[resSlider.value];
         if (res.value !== '0') args.push('-m', res.value);
-        
+
         const fps = fpsArray[fpsSlider.value];
         if (fps.value !== '0') args.push('--max-fps', fps.value);
 
@@ -449,7 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btn-social-yt')?.addEventListener('click', () => window.scrcpyAPI?.openExternal('https://www.youtube.com/@NonsensysDEV'));
-    document.getElementById('btn-repo-droid')?.addEventListener('click', () => window.scrcpyAPI?.openExternal('https://github.com/Genymobile/scrcpy'));
+    document.getElementById('btn-repo-droid')?.addEventListener('click', () => window.scrcpyAPI?.openExternal('https://github.com/RevonStudio/DroidMirror')); // repo public
     document.getElementById('btn-repo-scrcpy')?.addEventListener('click', () => window.scrcpyAPI?.openExternal('https://github.com/Genymobile/scrcpy'));
 
 
@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showTutorialStep(index) {
         const container = document.getElementById('tutorial-container');
         if (!container) return;
-        
+
         container.innerHTML = '';
         if (index >= tutorialSteps.length) {
             finishTutorial();
@@ -507,13 +507,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetEl = document.getElementById(step.target);
             if (targetEl) {
                 targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                await new Promise(r => setTimeout(r, 600)); 
+                await new Promise(r => setTimeout(r, 600));
             }
         }
 
         const overlay = document.createElement('div');
         overlay.className = 'tutorial-overlay';
-        
+
         if (step.target) {
             const targetEl = document.getElementById(step.target);
             if (targetEl) {
@@ -524,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 spotlight.style.height = `${rect.height + 12}px`;
                 spotlight.style.top = `${rect.top - 6}px`;
                 spotlight.style.left = `${rect.left - 6}px`;
-                overlay.appendChild(spotlight); 
+                overlay.appendChild(spotlight);
             }
         }
 
@@ -548,7 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const winW = window.innerWidth;
                 const winH = window.innerHeight;
                 const tooltipW = 280;
-                
+
                 let left = rect.left;
                 if (left + tooltipW > winW - 20) {
                     left = winW - tooltipW - 40;
@@ -559,7 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (top + 150 > winH) {
                     top = rect.top - 180;
                 }
-                top = Math.max(70, top); 
+                top = Math.max(70, top);
 
                 tooltip.style.left = `${left}px`;
                 tooltip.style.top = `${top}px`;
@@ -584,7 +584,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('tutorial-container').innerHTML = '';
         const modal = document.getElementById('tutorial-modal-overlay');
         const texts = translations[window.App.curLang] || translations.en;
-        
+
         if (modal) {
             document.getElementById('modal-title').innerText = texts.tutFinalTitle;
             document.getElementById('modal-desc').innerText = texts.tutFinalDesc;
